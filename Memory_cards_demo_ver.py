@@ -65,7 +65,6 @@ class MemoryGame:
         for widget in self.root.winfo_children():
             widget.destroy()
 
-
 if name == "__main__":
     root = tk.Tk()
     root.geometry("600x600")
