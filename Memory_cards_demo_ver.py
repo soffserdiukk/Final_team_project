@@ -65,14 +65,6 @@ class MemoryGame:
         for widget in self.root.winfo_children():
             widget.destroy()
 
-
-if name == "__main__":
-    root = tk.Tk()
-    root.geometry("600x600")
-    root.config(bg="#f0f0f0")
-    game = MemoryGame(root)
-    root.mainloop()
-
     def start_game(self, rows: int, cols: int) -> None:
         """Initialize game with selected difficulty"""
         self.rows = rows
@@ -143,3 +135,59 @@ if name == "__main__":
                     )
                     btn.grid(row=i, column=j, padx=5, pady=5)
                     self.buttons.append(btn)
+
+    def _button_click(self, idx: int) -> None:
+        """Handle button click events"""
+        if not self.can_click or self.buttons[idx]["text"] != "?":
+            return
+
+        current_button = self.buttons[idx]
+        current_button["text"] = self.symbols[idx]
+        current_button.config(bg="#f1c40f", fg="black")
+
+        if not self.first_click:
+            self.first_click = current_button
+        else:
+            self.moves += 1
+            self.moves_label.config(text=f"Moves: {self.moves}")
+            self.can_click = False
+            self.root.after(1000, lambda: self._check_match(current_button))
+
+    def _check_match(self, second_button: tk.Button) -> None:
+        """Check if two opened cards match"""
+        if self.first_click["text"] == second_button["text"]:
+            self.first_click.config(
+                state="disabled",
+                disabledforeground="white",
+                bg=self.disabled_color
+            )
+            second_button.config(
+                state="disabled",
+                disabledforeground="white",
+                bg=self.disabled_color
+            )
+
+            # Check if game is complete
+            if all(btn["state"] == "disabled" for btn in self.buttons):
+                messagebox.showinfo(
+                    "Congratulations!",
+                    f"You've won in {self.moves} moves!"
+                )
+        else:
+            self.first_click.config(text="?", bg=self.card_bg, fg=self.card_fg)
+            second_button.config(text="?", bg=self.card_bg, fg=self.card_fg)
+
+        self.first_click = None
+        self.can_click = True
+
+if name == "__main__":
+    root = tk.Tk()
+    root.geometry("600x600")
+    root.config(bg="#f0f0f0")
+    game = MemoryGame(root)
+    root.mainloop()
+
+
+
+
+
