@@ -88,7 +88,6 @@ class MemoryGame:
 
         self._setup_board()
 
-
     def _setup_board(self) -> None:
         """Setup the game board with styled buttons"""
         self.clear_window()
@@ -143,5 +142,7 @@ if name == "__main__":
     root.config(bg="#f0f0f0")
     game = MemoryGame(root)
     root.mainloop()
+
+
 
 
